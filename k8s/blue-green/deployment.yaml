@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: petclinic
 spec:
-  replicas: 2
+  replicas: 5
   selector:
     matchLabels:
       app: petclinic
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: <+artifact.primary.image>
+          image: <+artifacts.primary.image>
           ports:
             - containerPort: 80
           env:
