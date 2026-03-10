@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-svc-stage
+  namespace: test-qa
   annotations:
     harness.io/stage-service: "true"
 spec:
