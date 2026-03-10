@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: <+artifacts.primary.image>
+          image: yashwanth536/petclinic:1
           ports:
             - containerPort: 80
           env:
