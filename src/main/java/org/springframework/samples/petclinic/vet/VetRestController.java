@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/vets")
-class VetRestController {
+public class VetRestController {
 
 	private final VetRepository vetRepository;
 
