@@ -8,6 +8,6 @@
     "test:api-contract": "playwright test tests/api-contract"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0"
+    "@playwright/test": "^1.54.0"
   }
 }
