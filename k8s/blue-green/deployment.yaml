@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: yashwanth536/petclinic:1
+          image: yashwanth536/petclinic:2
           ports:
             - containerPort: 80
           env:
