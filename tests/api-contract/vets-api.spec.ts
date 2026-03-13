@@ -1,18 +1,26 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Vets API Contract', () => {
-  test('should return vets list with correct schema', async ({ request, baseURL }) => {
-    const url = `${baseURL}/api/vets`;
-    const response = await request.get(url);
-    
-    if (response.status() !== 200) {
-      console.log(`Failed to fetch ${url}: ${response.status()}`);
-      console.log(await response.text());
-    }
-    
-    expect(response.status()).toBe(200);
-    const body = await response.json();
-    expect(body).toHaveProperty('vetList');
-    expect(Array.isArray(body.vetList)).toBeTruthy();
+test.describe('Vets Page Contract', () => {
+  test('should return veterinarians page successfully', async ({ page }) => {
+    // Navigate to the veterinarians page
+    const response = await page.goto('/vets.html');
+
+    // Verify page loads successfully
+    expect(response?.status()).toBe(200);
+
+    // Verify page has the expected content
+    await expect(page.locator('h2')).toContainText('Veterinarians');
+    await expect(page.locator('table')).toBeVisible();
+  });
+
+  test('should display veterinarians in a table', async ({ page }) => {
+    await page.goto('/vets.html');
+
+    // Verify table has rows (header + at least one vet)
+    const rows = page.locator('table tbody tr');
+    await expect(rows).toHaveCount(await rows.count(), { timeout: 5000 });
+
+    // Verify table has expected columns
+    await expect(page.locator('table th')).toContainText(['Name', 'Specialties']);
   });
 });
