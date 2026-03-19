@@ -1,0 +1,37 @@
+auth_enabled: false
+
+ingester:
+  chunk_idle_period: 3m
+  max_chunk_age: 1h
+  max_streams_per_user: 100000
+  chunk_retain_period: 1m
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+    num_tokens: 128
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+storage_config:
+  filesystem:
+    directory: /loki/chunks
+  index_cache_validity: 5m
+
+runtime_config:
+  file: /etc/loki/runtime.yaml
+  period: 10s
