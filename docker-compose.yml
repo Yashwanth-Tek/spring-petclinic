@@ -1,4 +1,5 @@
 services:
+
   mysql:
     image: mysql:9.5
     ports:
@@ -11,6 +12,7 @@ services:
       - MYSQL_DATABASE=petclinic
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
+
   postgres:
     image: postgres:18.1
     ports:
@@ -19,3 +21,65 @@ services:
       - POSTGRES_PASSWORD=petclinic
       - POSTGRES_USER=petclinic
       - POSTGRES_DB=petclinic
+
+  # ============================================
+  # Observability Stack
+  # ============================================
+
+  zipkin-server:
+    image: ghcr.io/openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+    networks:
+      - observability-network
+
+  prometheus:
+    image: prom/prometheus:main-distroless
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - observability-network
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - observability-network
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki-config.yaml
+    networks:
+      - observability-network
+    command: -config.file=/etc/loki-config.yaml
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    ports:
+      - "4317:4317"   # gRPC receiver
+      - "4318:4318"   # HTTP receiver
+      - "9464:9464"   # Prometheus exporter
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol/config.yaml
+    networks:
+      - observability-network
+    command: ["--config=/etc/otelcol/config.yaml"]
+    depends_on:
+      - zipkin-server
+      - prometheus
+      - grafana
+      - loki
+
+networks:
+  observability-network:
+    driver: bridge
