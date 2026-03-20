@@ -15,33 +15,34 @@ spec:
         app: spring-petclinic
         version: blue
     spec:
+      initContainers:
+      - name: wait-for-app-init
+        image: busybox
+        command: ['sh', '-c', 'echo "Giving app time to initialize..."; sleep 10']
       containers:
       - name: petclinic
         image: yashwanth536/petclinic1:3
         ports:
         - containerPort: 8080
-        
-        # Health Check - Liveness Probe
+
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
             port: 8080
-          initialDelaySeconds: 30
+          initialDelaySeconds: 90
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-        
-        # Health Check - Readiness Probe
+
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-        
-        # Resource Limits
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
+
         resources:
           requests:
             memory: "512Mi"
@@ -49,17 +50,10 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
-        
-        # Environment Variables
+
         env:
         - name: SPRING_PROFILES_ACTIVE
-          value: "mysql"
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mysql://mysql-svc:3306/petclinic"
-        - name: SPRING_DATASOURCE_USERNAME
-          value: "petclinic"
-        - name: SPRING_DATASOURCE_PASSWORD
-          value: "petclinic"
+          value: "h2"
 
 ---
 apiVersion: v1
