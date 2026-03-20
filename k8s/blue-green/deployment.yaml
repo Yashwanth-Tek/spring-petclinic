@@ -23,13 +23,13 @@ spec:
       - name: petclinic
         image: yashwanth536/petclinic1:3
         ports:
-        - containerPort: 8080
+        - containerPort: 80        # ← was 8080
 
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
-            port: 8080
-          initialDelaySeconds: 90
+            port: 80               # ← was 8080
+          initialDelaySeconds: 120  # ← increased, app takes ~60-70s to start
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
@@ -37,8 +37,8 @@ spec:
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
-            port: 8080
-          initialDelaySeconds: 60
+            port: 80               # ← was 8080
+          initialDelaySeconds: 90  # ← was 60
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 5
@@ -64,11 +64,11 @@ metadata:
 spec:
   selector:
     app: spring-petclinic
-    harness.io/color: blue        # ← Harness will toggle this to green on swap
+    harness.io/color: blue
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8080
+    targetPort: 80               # ← was 8080
   type: ClusterIP
 
 ---
@@ -80,9 +80,9 @@ metadata:
 spec:
   selector:
     app: spring-petclinic
-    harness.io/color: green       # ← Harness deploys green here first
+    harness.io/color: green
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8080
+    targetPort: 80               # ← was 8080
   type: ClusterIP
