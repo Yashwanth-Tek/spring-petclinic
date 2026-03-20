@@ -8,12 +8,12 @@ spec:
   selector:
     matchLabels:
       app: spring-petclinic
-      version: blue
+      harness.io/color: blue
   template:
     metadata:
       labels:
         app: spring-petclinic
-        version: blue
+        harness.io/color: blue
     spec:
       initContainers:
       - name: wait-for-app-init
@@ -64,7 +64,7 @@ metadata:
 spec:
   selector:
     app: spring-petclinic
-    version: blue
+    harness.io/color: blue        # ← Harness will toggle this to green on swap
   ports:
   - protocol: TCP
     port: 80
@@ -80,7 +80,7 @@ metadata:
 spec:
   selector:
     app: spring-petclinic
-    version: green
+    harness.io/color: green       # ← Harness deploys green here first
   ports:
   - protocol: TCP
     port: 80
