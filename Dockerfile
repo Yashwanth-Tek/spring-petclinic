@@ -5,10 +5,10 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Dspring-javaformat.skip=true
 
 # ---------- Stage 2: runtime ----------
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre-alpine 
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
