@@ -1,41 +1,94 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: test-qa
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: petclinic
+  name: petclinic-blue
   namespace: test-qa
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: petclinic
+      app: spring-petclinic
+      version: blue
   template:
     metadata:
       labels:
-        app: petclinic
+        app: spring-petclinic
+        version: blue
     spec:
       containers:
-        - name: petclinic
-          image: yashwanth536/petclinic:4
-          ports:
-            - containerPort: 80
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 80
-            initialDelaySeconds: 70
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 6
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 80
-            initialDelaySeconds: 90
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 6
+      - name: petclinic
+        image: yashwanth536/petclinic1:latest
+        ports:
+        - containerPort: 8080
+        
+        # Health Check - Liveness Probe
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        # Health Check - Readiness Probe
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        
+        # Resource Limits
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        
+        # Environment Variables
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "mysql"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-svc:3306/petclinic"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "petclinic"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "petclinic"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-svc
+  namespace: test-qa
+spec:
+  selector:
+    app: spring-petclinic
+    version: blue
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-svc-stage
+  namespace: test-qa
+spec:
+  selector:
+    app: spring-petclinic
+    version: green
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
