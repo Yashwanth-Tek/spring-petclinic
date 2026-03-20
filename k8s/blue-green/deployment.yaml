@@ -21,7 +21,7 @@ spec:
         command: ['sh', '-c', 'echo "Giving app time to initialize..."; sleep 10']
       containers:
       - name: petclinic
-        image: yashwanth536/petclinic1:3
+        image: yashwanth536/petclinic1:4
         ports:
         - containerPort: 80        # ← was 8080
 
