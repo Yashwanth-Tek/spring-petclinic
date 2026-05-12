@@ -24,7 +24,6 @@ spec:
         image: yashwanth536/petclinic1:4
         ports:
         - containerPort: 80        # ← was 8080
-
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
@@ -33,7 +32,6 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
@@ -42,7 +40,6 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 5
-
         resources:
           requests:
             memory: "512Mi"
@@ -50,17 +47,17 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
-
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "h2"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-svc
   namespace: test-qa
+  labels:
+    harness.io/color: blue
 spec:
   selector:
     app: spring-petclinic
@@ -70,13 +67,14 @@ spec:
     port: 80
     targetPort: 80               # ← was 8080
   type: ClusterIP
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-svc-stage
   namespace: test-qa
+  labels:
+    harness.io/color: green
 spec:
   selector:
     app: spring-petclinic
