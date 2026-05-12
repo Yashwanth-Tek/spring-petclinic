@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: petclinic-svc__1
+  name: petclinic-svc-1
   namespace: workspace
   labels:
     harness.io/color: blue
@@ -74,7 +74,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: petclinic-svc-stage__2
+  name: petclinic-svc-stage-2
   namespace: workspace
   labels:
     harness.io/color: green
