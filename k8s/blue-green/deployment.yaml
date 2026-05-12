@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: petclinic-blue
-  namespace: test-qa
+  namespace: workspace
 spec:
   replicas: 2
   selector:
@@ -55,7 +55,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-svc__1
-  namespace: test-qa
+  namespace: workspace
   labels:
     harness.io/color: blue
     version: "1"
@@ -75,7 +75,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-svc-stage__2
-  namespace: test-qa
+  namespace: workspace
   labels:
     harness.io/color: green
     version: "2"
